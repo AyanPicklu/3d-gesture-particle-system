@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Gesture Particle System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: #000;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        #video {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 240px;
+            height: 180px;
+            border: 3px solid #00ffff;
+            border-radius: 10px;
+            transform: scaleX(-1);
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        #controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            z-index: 10;
+            border: 2px solid #00ffff;
+            max-width: 300px;
+        }
+
+        #controls h2 {
+            margin-bottom: 15px;
+            color: #00ffff;
+            font-size: 18px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .control-group select,
+        .control-group input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #00ffff;
+            background: rgba(0, 50, 50, 0.5);
+            color: white;
+            font-size: 14px;
+        }
+
+        .gesture-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0, 100, 100, 0.3);
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .gesture-info p {
+            margin: 5px 0;
+        }
+
+        #status {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: #00ffff;
+            z-index: 10;
+            border: 2px solid #00ffff;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00ffff;
+            font-size: 24px;
+            z-index: 100;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: #00ffff;
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #00cccc;
+        }
+
+        .color-picker {
+            height: 40px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container">
+        <video id="video" autoplay playsinline></video>
+        
+        <div id="controls">
+            <h2>🎨 Particle Controls</h2>
+            
+            <div class="control-group">
+                <label>Particle Template:</label>
+                <select id="template-select">
+                    <option value="sphere">Sphere</option>
+                    <option value="heart">Heart</option>
+                    <option value="flower">Flower</option>
+                    <option value="saturn">Saturn</option>
+                    <option value="fireworks">Fireworks</option>
+                    <option value="spiral">Spiral Galaxy</option>
+                    <option value="cube">Cube</option>
+                    <option value="wave">Wave</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Particle Count:</label>
+                <input type="range" id="particle-count" min="1000" max="50000" value="10000" step="1000">
+                <span id="count-value">10000</span>
+            </div>
+
+            <div class="control-group">
+                <label>Base Color:</label>
+                <input type="color" id="color-picker" value="#00ffff" class="color-picker">
+            </div>
+
+            <div class="gesture-info">
+                <p><strong>Gestures:</strong></p>
+                <p>✋ Open Hand: Expand</p>
+                <p>✊ Fist: Contract</p>
+                <p>👆 Point: Rotate</p>
+                <p>✌️ Peace: Color Shift</p>
+            </div>
+
+            <button id="reset-btn">Reset Camera</button>
+        </div>
+
+        <div id="status">Initializing...</div>
+        <div class="loading" id="loading">Loading Hand Tracking...</div>
+    </div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+
+    <script type="module" src="./app.js"></script>
+</body>
+</html>
